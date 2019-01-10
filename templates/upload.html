@@ -1,0 +1,14 @@
+{{ $data := . }}
+{{ range $key, $value := $data.Flashes }}
+<div class="alert alert-success" role="alert">
+    {{ $value }}
+</div>
+{{ end }}
+<form action="/process" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="gorilla.csrf.Token" value="{{ $data.CsrfToken }}">
+    <div class="form-group">
+        <label for="csvfile">CSV File:</label>
+        <input type="file" class="form-control" name="csvfile">
+    </div>
+    <button type="submit" class="btn btn-primary">Upload</button>
+</form>
