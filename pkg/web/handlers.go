@@ -63,6 +63,7 @@ func (web *Web) logoutHandler(w http.ResponseWriter, r *http.Request) {
 
 func (web *Web) processHandler(w http.ResponseWriter, r *http.Request) {
 	sess, _ := web.store.Get(r, "_ya_flashes")
+	seg := r.FormValue("name")
 	f, fh, err := r.FormFile("csvfile")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -70,12 +71,14 @@ func (web *Web) processHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	token, _ := web.token(r)
 	p := &audience.Payload{}
-	p, err = web.uploader.Do(token, fh.Filename, f)
+	p, err = web.uploader.Do(token, fh.Filename, seg, f)
+	msg := ""
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		msg = err.Error()
+	} else {
+		msg = fmt.Sprintf("File successfully uploaded. Segment: %d", p.Segment.ID)
 	}
-	sess.AddFlash(fmt.Sprintf("File successfully uploaded. Segment: %d", p.Segment.ID), "message")
+	sess.AddFlash(msg, "message")
 	err = sess.Save(r, w)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

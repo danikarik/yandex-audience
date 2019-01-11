@@ -48,3 +48,29 @@ type Segment struct {
 	ItemQuantity       int    `json:"item_quantity"`
 	Guest              bool   `json:"guest"`
 }
+
+// Confirm represents confirm payload.
+type Confirm struct {
+	Segment SegmentConfirm `json:"segment"`
+}
+
+// SegmentConfirm represents confirm segment request.
+type SegmentConfirm struct {
+	ID          int    `json:"id"`
+	Name        string `json:"name"`
+	Hashed      uint   `json:"hashed"`
+	ContentType string `json:"content_type"`
+}
+
+// ErrorResponse is returned in case of error.
+type ErrorResponse struct {
+	Errors  []Error `json:"errors"`
+	Code    int     `json:"code"`
+	Message string  `json:"message"`
+}
+
+// Error contains error type and message.
+type Error struct {
+	Type    string `json:"error_type"`
+	Message string `json:"message"`
+}
